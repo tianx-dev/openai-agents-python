@@ -1,41 +1,32 @@
 # Playwright Screenshot Example
 
-This example demonstrates how to use the OpenAI Agents SDK with Playwright MCP (Machine Control Protocol) to automate browser interactions and capture screenshots.
+This example uses the [Playwright MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/playwright), running locally via `npx`.
 
-## Features
-
-- Navigates to websites
-- Captures full-page screenshots
-- Saves screenshots with descriptive filenames
-- Reports file information
-
-## Requirements
-
-- Node.js and npm
-- Python 3.9+ with the OpenAI Agents SDK installed
-
-## Installation
-
-Before running this example, make sure you have the Playwright MCP package available:
+Run it via:
 
 ```bash
-# This will be installed automatically when you run the example
-npm install -g @playwright/mcp
+uv run python examples/mcp/playwright_example/main.py
 ```
 
-## Usage
+## Details
 
-Run the example:
+The example uses the `MCPServerStdio` class from `agents.mcp`, with the command:
 
 ```bash
-python main.py
+npx -y "@playwright/mcp@latest" --headless
 ```
 
-The script will:
-1. Launch a headless Playwright browser via the MCP server
-2. Navigate to OpenAI's website
-3. Capture screenshots
-4. Save them to the `screenshots` directory
+The script demonstrates browser automation capabilities by:
+1. Navigating to example.com and httpbin.org
+2. Taking full-page screenshots
+3. Saving them to a local `screenshots` directory with descriptive filenames
+
+Under the hood:
+
+1. The server is spun up in a subprocess, and exposes Playwright tools for browser automation
+2. We add the server instance to the Agent via `mcp_servers`
+3. Each time the agent runs, we call out to the MCP server to fetch the list of tools via `server.list_tools()`
+4. If the LLM chooses to use an MCP tool, we call the MCP server to run the tool via `server.run_tool()`
 
 ## Customization
 
