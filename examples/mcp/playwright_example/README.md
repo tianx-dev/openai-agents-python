@@ -28,6 +28,17 @@ Under the hood:
 3. Each time the agent runs, we call out to the MCP server to fetch the list of tools via `server.list_tools()`
 4. If the LLM chooses to use an MCP tool, we call the MCP server to run the tool via `server.run_tool()`
 
+## RET Loop
+
+The example demonstrates a Read-Eval-Test loop:
+
+1. **Read**: The agent reads the user's request to navigate to websites and take screenshots
+2. **Eval**: The agent evaluates which Playwright tools to use (navigation, screenshot capture)
+3. **Test**: The agent tests the results by:
+   - Verifying successful navigation
+   - Confirming screenshot capture
+   - Checking file sizes and locations
+
 ## Customization
 
 - Modify `user_request` in `main.py` to capture different websites
