@@ -49,7 +49,7 @@ async def run(mcp_server: MCPServer):
         # Read: Get user input
         print("\nEnter your request (or 'exit' to quit):")
         user_request = input().strip()
-        
+
         if user_request.lower() == 'exit':
             break
 
@@ -60,15 +60,6 @@ async def run(mcp_server: MCPServer):
 
         # Test: Display results and verify screenshots
         print("\nResult:", result)
-
-        # List all screenshots created
-        all_screenshots = glob.glob(os.path.join(screenshots_dir, "*.png"))
-        if all_screenshots:
-            print(f"\nAll screenshots in directory ({len(all_screenshots)}):")
-            for screenshot in all_screenshots:
-                file_size = os.path.getsize(screenshot) / 1024  # KB
-                print(f" - {os.path.basename(screenshot)} ({file_size:.2f} KB)")
-
 
 async def main():
     server = None
@@ -83,7 +74,7 @@ async def main():
             },
         )
         await server.__aenter__()
-        
+
         trace_id = gen_trace_id()
         with trace(workflow_name="Playwright Screenshot Example", trace_id=trace_id):
             print(f"View trace: https://platform.openai.com/traces/{trace_id}\n")
@@ -97,7 +88,6 @@ async def main():
                 await server.__aexit__(None, None, None)
             except Exception as e:
                 print(f"Warning: Error during server cleanup: {e}")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
