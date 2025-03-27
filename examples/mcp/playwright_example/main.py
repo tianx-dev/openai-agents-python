@@ -15,32 +15,13 @@ async def run(mcp_server: MCPServer):
 
     # agent with enhanced instructions for screenshot capability
     agent = Agent(
-        name="Web Screenshot Assistant",
+        name="Playwright Assistant",
         instructions="""
-        You are a web screenshot assistant that follows a Read-Eval-Test (RET) loop pattern:
-
-        Read:
-        - Understand the user's request for website navigation and screenshots
-        - Identify any specific elements or areas to capture
-        - Note any special requirements for the screenshot
-
-        Eval:
-        - Choose appropriate Playwright tools for the task
-        - Plan the sequence of actions (navigation, waiting, screenshot)
-        - Determine the best filename and location for saving
-
-        Test:
-        - Verify successful navigation and page load
-        - Confirm screenshot capture
+        You are a playwright assistant that follows a Read-Eval-Test (RET) loop pattern:
+        - Read: Understand the user's request for website navigation and screenshots
+        - Eval: Choose appropriate Playwright tools for the task
+        - Test: Verify successful navigation and page load
         - Report back with results and file locations
-
-        Guidelines:
-        - Always wait for page load before screenshots
-        - Use page.locator() for specific elements
-        - Save to "screenshots" directory with descriptive names
-        - Use PNG format for quality
-        - Include domain and date in filenames
-        - Capture full page content when needed
         """,
         mcp_servers=[mcp_server],
     )
@@ -67,16 +48,17 @@ async def run(mcp_server: MCPServer):
 
 async def main():
     server = None
-    try:
-        # Configure the MCP server
-        # Note: remove --headless if you want to see the browser in action
-        server = MCPServerStdio(
-            name="Playwright Screenshot Server",
-            params={
-                "command": "npx",
-                "args": ["-y", "@playwright/mcp@latest", "--headless"],
-            },
-        )
+
+
+    # rewrite this with async with
+    async with MCPServerStdio(
+        name="Playwright Screenshot Server",
+        params={
+            "command": "npx",
+            "args": ["-y", "@playwright/mcp@latest", "--headless"],
+        },
+    ) as server:
+        trace_id = gen_trace_id()
         await server.__aenter__()
 
         trace_id = gen_trace_id()
@@ -86,12 +68,6 @@ async def main():
 
             # Run our screenshot example
             await run(server)
-    finally:
-        if server:
-            try:
-                await server.__aexit__(None, None, None)
-            except Exception as e:
-                print(f"Warning: Error during server cleanup: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())
